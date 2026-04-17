@@ -1,0 +1,13 @@
+.venv
+__pycache__/
+*.pyc
+*.pkl
+*.log
+*.csv
+*.json
+*.h5     
+garbage_test.py
+    .github/
+Dockerfile
+README.md
+.github/
