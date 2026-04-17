@@ -1,42 +1,37 @@
-CI: CI- train and save model # 1. define pipeline name.
+name: CI- Train and Save Model     # 1. define pipeline name.
 on:      # 2. define when it runs: event to trigger pipeline.
   push:  
-    branches:[main]   # Run CI when code is pushed to main
+    branches: [main]   # Run CI when code is pushed to main
   pull_request:     
-    branches:[main]  # Run CI when a pull request is created to main
+    branches: [main]  # Run CI when a pull request is created to main
 
-jobs:   # 3. Define job environment
+jobs:   # 3. Define job environment, collection of tasks to be executed. 
   matrix_pip:
     name: Train and save model
-    runs on: ubuntu-latest
-    strategy:
-      matrix:
-        python: [3.10,3.11,3.12]  # Test on multiple Python versions
-    steps: # 5: Add steps to run the job
-      - name: Checkout code
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix: # Runs the same job multiple times Each time with a different Python version
+        python: [3.11,3.12]  # Test on multiple Python versions
+    steps: #   Sequence of commands executed inside the VM.  step 5: Add steps to run the job  
+      - name: Checkout code   # ❗ Critical: Without this: No code → pipeline fails Downloads your repo into the runner
         uses: actions/checkout@v4
 
       - name: setup python
-        uses:actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ matrix.python }}  # Uses matrix value (3.10, 3.11, 3.12) 🎯 Purpose # Dynamically selects Python version based on the matrix configuration.
       - name : upgrade pip
-        run: python -m pip install --upgrade pip setuptools wheel
+        run: python -m pip install --upgrade pip setuptools wheel Updates package tools Avoid dependency installation issues
 
       - name : install project dependencies
         run: python -m pip install -r requirements.txt
 
       - name: Train and save the model
-        run : |
+        run : |                               # Runs training script  -- model saved here Lists files in artifacts -- Verify model is saved
           python train.py
-          ls -la artifacts   # model saved here 
+          ls -la artifacts       
       - name : upload artifacts
-        uses :action/upload-artifcats@v4
+        uses : actions/upload-artifacts@v4
         with:
-        name: ml-artifacts -${{matrix-python}} -${{ github.run_id }} # name of artifact
+        name: ml-artifacts -${{matrix.python}} -${{ github.run_id }} # name of artifact
         path : artifacts/  # path to the model artifacts
-
-
-
-
-
