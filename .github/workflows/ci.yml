@@ -1,43 +1,42 @@
-name: CI - Train and Save the model
+CI: CI- train and save model # 1. define pipeline name.
+on:      # 2. define when it runs: event to trigger pipeline.
+  push:  
+    branches:[main]   # Run CI when code is pushed to main
+  pull_request:     
+    branches:[main]  # Run CI when a pull request is created to main
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  matrix-pip:
-    name: Train and Save the model
-    runs-on: ubuntu-latest
+jobs:   # 3. Define job environment
+  matrix_pip:
+    name: Train and save model
+    runs on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.11, 3.12]
-    
-    steps:
-      - name: Checkout
+        python: [3.10,3.11,3.12]  # Test on multiple Python versions
+    steps: # 5: Add steps to run the job
+      - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Setup python 
-        uses: actions/setup-python@v4
+
+      - name: setup python
+        uses:actions/setup-python@v4
         with:
-           python-version: ${{ matrix.python }}
-      
-      - name: Upgrade pip
+          python-version: ${{ matrix.python }}
+      - name : upgrade pip
         run: python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install project dependencies
+      - name : install project dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Train the model
-        run: |
-           python train.py
-           ls -la artifacts
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Train and save the model
+        run : |
+          python train.py
+          ls -la artifacts   # model saved here 
+      - name : upload artifacts
+        uses :action/upload-artifcats@v4
         with:
-          name: ml-artifacts-${{ matrix.python }}-${{ github.run_id }}
-          path: artifacts
+        name: ml-artifacts -${{matrix-python}} -${{ github.run_id }} # name of artifact
+        path : artifacts/  # path to the model artifacts
+
+
+
 
 
