@@ -7,7 +7,3 @@ __pycache__/
 *.json
 *.h5     
 garbage_test.py
-    .github/
-Dockerfile
-README.md
-.github/
