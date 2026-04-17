@@ -9,5 +9,9 @@ __pycache__/
 *.json
 *.h5     
 garbage/
-garbage_test.py
+garbage_test.
+!notes/notes.md
+# .DS_Store
+# .idea/
+# .vscode/  
 
